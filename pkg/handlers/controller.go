@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/middlewares"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -15,9 +14,13 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		DB: db,
 	}
 
-	routes := r.Group("/account")
-	routes.Use(middlewares.AuthMiddleware())
+	r.POST("/signup", h.Signup)
+	r.POST("/login", h.Login)
+	r.POST("/logout", h.Logout)
 
-	routes.POST("/signup", h.Signup)
-	routes.POST("/login", h.Login)
+	accounts := r.Group("/account")
+
+	accounts.GET("/songs", h.GetSongs)
+	accounts.POST("/add-song", h.AddSong)
+
 }
