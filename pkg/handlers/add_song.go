@@ -43,7 +43,7 @@ func (h handler) AddSong(c *gin.Context) { // Хэндлер добавлени�
 
 	if result := h.DB.Exec("INSERT INTO user_songs (user_id, song_id) VALUES (?, ?)", claims.ID, songID); result.Error != nil { // Вставляем в таблицу отношений айди юзера из токена и песни из переменной
 		log.Println(result.Error) // Обработка ошибок
-		c.AbortWithStatusJSON(401, gin.H{"error": "Не удалось добавить песню"})
+		c.AbortWithStatusJSON(401, gin.H{"error": "Не удалось добавить песню. Скорее всего, она уже добавлена в ваш аккаунт"})
 		return
 	}
 

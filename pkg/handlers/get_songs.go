@@ -3,8 +3,6 @@ package handlers
 import (
 	"log"
 
-	//"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
-
 	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 
 	"github.com/gin-gonic/gin"
