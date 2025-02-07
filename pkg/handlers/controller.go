@@ -20,7 +20,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	accounts := r.Group("/account")
 
-	accounts.POST("/song", h.CreateSong)
+	accounts.POST("/create-song", h.CreateSong)
 	accounts.GET("/songs", h.GetSongs)
 	accounts.POST("/songs", h.AddSong)
 	accounts.DELETE("/songs", h.RemoveSong)

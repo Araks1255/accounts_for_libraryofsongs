@@ -16,7 +16,7 @@ func Init(dbUrl string) (db *gorm.DB, err error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Song{})
 
 	return db, nil
 }

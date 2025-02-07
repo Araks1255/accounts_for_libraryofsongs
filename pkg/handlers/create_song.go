@@ -7,7 +7,8 @@ import (
 	"os"
 	"strings"
 
-	song "github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+	localModels "github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 	"github.com/Araks1255/libraryofsongs/pkg/common/models"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -19,6 +20,20 @@ func (h handler) CreateSong(c *gin.Context) { // Хэндлер создания
 	viper.SetConfigFile("./pkg/common/envs/.env")   // Устанавливаем конфиг файл с переменными окружения
 	viper.ReadInConfig()                            // Считываем его
 	pathToList = viper.Get("PATH_TO_LIST").(string) // Получаем строковое значение переменной окружения PATH_TO_LIST, и записываем его в глобальную переменную
+
+	cookie, err := c.Cookie("token") // Пояснение в add_song.go
+	if err != nil {
+		log.Println(err)
+		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
+		return
+	}
+
+	claims, err := utils.ParseToken(cookie)
+	if err != nil {
+		log.Println(err)
+		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
+		return
+	}
 
 	form, err := c.MultipartForm() // Получение мультипарт формы из запроса
 	if err != nil {                // Проверка ошибок (вдркг кто-то JSON отправил)
@@ -38,8 +53,8 @@ func (h handler) CreateSong(c *gin.Context) { // Хэндлер создания
 	errChan := make(chan error, numberOfGorutines) // Создание буферизированного канала для ошибок, емкостью количества горутин (каждая горутина возвращает одну ошибку)
 
 	go func() { // Запуск горутины в виде анонимной функции
-		err := CreateSong(form, h) // Которая вызывает функцию создания песни
-		errChan <- err             // И записывает возвращаемую ей ошибку в канал
+		err := CreateSong(form, claims, h) // Которая вызывает функцию создания песни
+		errChan <- err                     // И записывает возвращаемую ей ошибку в канал
 	}()
 
 	go func() { // Запуск второй горутины в виде анонимной функции
@@ -60,7 +75,7 @@ func (h handler) CreateSong(c *gin.Context) { // Хэндлер создания
 	c.String(201, "Песня успешно создана") // Если все функции вернули nil, то отправляем уведомление об успешном создании песни
 }
 
-func CreateSong(form *multipart.Form, h handler) error { // Функция создания песни. Принимает мультипарт форму и хэндлер
+func CreateSong(form *multipart.Form, claims *localModels.Claims, h handler) error { // Функция создания песни. Принимает мультипарт форму и хэндлер
 	var genre models.Genre                               // Переменная для жанра
 	genre.Name = strings.ToLower(form.Value["genre"][0]) // Название жанра берём из формы под ключом genre
 
@@ -70,8 +85,9 @@ func CreateSong(form *multipart.Form, h handler) error { // Функция со�
 	var album models.Album                               // Альбом
 	album.Name = strings.ToLower(form.Value["album"][0]) // Название из формы
 
-	var song song.Song                                 // Песня
+	var song localModels.Song                          // Песня
 	song.Name = strings.ToLower(form.Value["song"][0]) // Название из формы
+	song.UserID = claims.ID
 
 	if genreID := IsRecordExists(h, "genres", genre.Name); genreID != 0 { // Проверяем наличие жанра в бд самописной функцией
 		band.GenreID = genreID // Если найденный айди не равен 0 (то есть, запись существует), присваиваем полю айди жанра у объекта группы найденный айди
