@@ -4,20 +4,13 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
-
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) AddGenre(c *gin.Context) {
-	cookie, err := c.Cookie("token")
+	claims, err := ParseClaims(c)
 	if err != nil {
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
-
-	claims, err := utils.ParseToken(cookie)
-	if err != nil {
+		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
 		return
 	}

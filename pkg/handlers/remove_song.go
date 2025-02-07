@@ -1,23 +1,14 @@
 package handlers
 
 import (
-	"strings"
 	"log"
-
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) RemoveSong(c *gin.Context) {
-	cookie, err := c.Cookie("token") // Это всё я уже пояснял в add_song.go
-	if err != nil {
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
-
-	claims, err := utils.ParseToken(cookie)
+	claims, err := ParseClaims(c)
 	if err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
@@ -34,9 +25,9 @@ func (h handler) RemoveSong(c *gin.Context) {
 		return
 	}
 
-	var desiredSongID uint                                                                 // Переменная для айди песни, которую надо удалить
+	var desiredSongID uint                                                                                  // Переменная для айди песни, которую надо удалить
 	h.DB.Raw("SELECT id FROM songs WHERE name = ?", strings.ToLower(desiredSong.Song)).Scan(&desiredSongID) // Ищем айди в таблице песен по имени из запроса, сканим в переменную
-	if desiredSongID == 0 {                                                                // Если найденный айди равен 0
+	if desiredSongID == 0 {                                                                                 // Если найденный айди равен 0
 		c.AbortWithStatusJSON(401, gin.H{"error": "Песня не найдена"}) // Отправляем ошибку
 		return                                                         // Ведь песни не существует
 	}

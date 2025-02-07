@@ -4,21 +4,12 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
-
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) AddSong(c *gin.Context) { // Хэндлер добавления песни к себе
-	cookie, err := c.Cookie("token") // Получаем данные под заголовком token из cookie
-	if err != nil {                  // Обработка ошибок
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
-
-	claims, err := utils.ParseToken(cookie) // Парсим данные из токена в переменную claims (объект структуры Claims из models)
-	if err != nil {                         // Обработываем ошибки
+	claims, err := ParseClaims(c)
+	if err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
 		return

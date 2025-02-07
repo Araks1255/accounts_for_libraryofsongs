@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	localModels "github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 	"github.com/Araks1255/libraryofsongs/pkg/common/models"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -21,14 +20,7 @@ func (h handler) CreateSong(c *gin.Context) { // Хэндлер создания
 	viper.ReadInConfig()                            // Считываем его
 	pathToList = viper.Get("PATH_TO_LIST").(string) // Получаем строковое значение переменной окружения PATH_TO_LIST, и записываем его в глобальную переменную
 
-	cookie, err := c.Cookie("token") // Пояснение в add_song.go
-	if err != nil {
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
-
-	claims, err := utils.ParseToken(cookie)
+	claims, err := ParseClaims(c)
 	if err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})

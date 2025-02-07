@@ -1,20 +1,15 @@
 package handlers
 
 import (
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) GetGenres(c *gin.Context) {
-	cookie, err := c.Cookie("token")
+	claims, err := ParseClaims(c)
 	if err != nil {
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
-
-	claims, err := utils.ParseToken(cookie)
-	if err != nil {
+		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
 		return
 	}
@@ -25,6 +20,6 @@ func (h handler) GetGenres(c *gin.Context) {
 		"INNER JOIN users ON user_genres.user_id = users.id "+
 		"WHERE users.id = ?", claims.ID).Scan(&genres)
 
-	response := convertToMap(genres)
+	response := ConvertToMap(genres)
 	c.JSON(200, response)
 }
