@@ -25,12 +25,14 @@ func (h handler) GetSongs(c *gin.Context) {
 		return
 	}
 
+	log.Println(claims.ID)
+
 	var songs []string
 
 	h.DB.Raw("SELECT songs.name FROM songs "+
-	"INNER JOIN user_songs ON songs.id = user_songs.song_id "+
-	"INNER JOIN users ON user_songs.user_id = users.id "+
-	"WHERE users.id = ?", claims.ID).Scan(&songs)
+		"INNER JOIN user_songs ON songs.id = user_songs.song_id "+
+		"INNER JOIN users ON user_songs.user_id = users.id "+
+		"WHERE users.id = ?", claims.ID).Scan(&songs)
 
 	response := convertToMap(songs)
 	c.JSON(200, response)
