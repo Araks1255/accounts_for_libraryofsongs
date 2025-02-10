@@ -4,16 +4,13 @@ import (
 	"log"
 	"strings"
 
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) RemoveBand(c *gin.Context) {
-	claims, err := ParseClaims(c)
-	if err != nil {
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
+	claims := c.MustGet("claims").(*models.Claims)
 
 	var desiredBand struct {
 		Band string `json:"band"`
@@ -38,5 +35,5 @@ func (h handler) RemoveBand(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"success":"Группа успешно удалена из вашего аккаунта"})
+	c.JSON(200, gin.H{"success": "Группа успешно удалена из вашего аккаунта"})
 }

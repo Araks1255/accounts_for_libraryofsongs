@@ -20,12 +20,7 @@ func (h handler) CreateSong(c *gin.Context) { // Хэндлер создания
 	viper.ReadInConfig()                            // Считываем его
 	pathToList = viper.Get("PATH_TO_LIST").(string) // Получаем строковое значение переменной окружения PATH_TO_LIST, и записываем его в глобальную переменную
 
-	claims, err := ParseClaims(c)
-	if err != nil {
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
+	claims := c.MustGet("claims").(*localModels.Claims)
 
 	form, err := c.MultipartForm() // Получение мультипарт формы из запроса
 	if err != nil {                // Проверка ошибок (вдркг кто-то JSON отправил)

@@ -1,18 +1,13 @@
 package handlers
 
 import (
-	"log"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h handler) GetGenres(c *gin.Context) {
-	claims, err := ParseClaims(c)
-	if err != nil {
-		log.Println(err)
-		c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
-		return
-	}
+	claims := c.MustGet("claims").(*models.Claims)
 
 	var genres []string
 	h.DB.Raw("SELECT genres.name FROM genres "+

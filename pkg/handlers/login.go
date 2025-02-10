@@ -13,7 +13,7 @@ import (
 )
 
 func (h handler) Login(c *gin.Context) {
-	viper.SetConfigFile("./pkg/common/envs/.env")
+	viper.SetConfigFile("./pkg/common/envs/.env") // Настройка вайпера для получен
 	viper.ReadInConfig()
 
 	secretKey := []byte(viper.Get("SECRET_KEY").(string))
