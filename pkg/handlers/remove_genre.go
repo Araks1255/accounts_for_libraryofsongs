@@ -12,18 +12,18 @@ import (
 func (h handler) RemoveGenre(c *gin.Context) {
 	claims := c.MustGet("claims").(*models.Claims)
 
-	var desiredGenre struct {
+	var requestBody struct {
 		Genre string `json:"genre"`
 	}
 
-	if err := c.ShouldBindJSON(&desiredGenre); err != nil {
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": err.Error()})
 		return
 	}
 
 	var desiredGenreID uint
-	h.DB.Raw("SELECT id FROM genres WHERE name = ?", strings.ToLower(desiredGenre.Genre)).Scan(&desiredGenreID)
+	h.DB.Raw("SELECT id FROM genres WHERE name = ?", strings.ToLower(requestBody.Genre)).Scan(&desiredGenreID)
 	if desiredGenreID == 0 {
 		c.AbortWithStatusJSON(401, gin.H{"error": "Жанр не найден"})
 		return

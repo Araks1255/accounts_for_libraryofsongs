@@ -12,18 +12,18 @@ import (
 func (h handler) AddBand(c *gin.Context) {
 	claims := c.MustGet("claims").(*models.Claims)
 
-	var desiredBand struct {
+	var requestBody struct {
 		Band string `json:"band"`
 	}
 
-	if err := c.ShouldBindJSON(&desiredBand); err != nil {
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": err.Error()})
 		return
 	}
 
 	var desiredBandID uint
-	h.DB.Raw("SELECT id FROM bands WHERE name = ?", strings.ToLower(desiredBand.Band)).Scan(&desiredBandID)
+	h.DB.Raw("SELECT id FROM bands WHERE name = ?", strings.ToLower(requestBody.Band)).Scan(&desiredBandID)
 	if desiredBandID == 0 {
 		c.AbortWithStatusJSON(401, gin.H{"error": "Песня не найдена"})
 		return

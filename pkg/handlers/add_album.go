@@ -12,17 +12,17 @@ import (
 func (h handler) AddAlbum(c *gin.Context) {
 	claims := c.MustGet("claims").(*models.Claims)
 
-	var desiredAlbum struct {
+	var requestBody struct {
 		Album string `json:"album"`
 	}
 
-	if err := c.ShouldBindJSON(&desiredAlbum); err != nil {
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		log.Println(err)
 		c.AbortWithStatusJSON(401, gin.H{"error": err.Error()})
 	}
 
 	var desiredAlbumID uint
-	h.DB.Raw("SELECT id FROM albums WHERE name = ?", strings.ToLower(desiredAlbum.Album)).Scan(&desiredAlbumID)
+	h.DB.Raw("SELECT id FROM albums WHERE name = ?", strings.ToLower(requestBody.Album)).Scan(&desiredAlbumID)
 	if desiredAlbumID == 0 {
 		c.AbortWithStatusJSON(401, gin.H{"error": "Альбом не найден"})
 		return

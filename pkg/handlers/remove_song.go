@@ -12,18 +12,18 @@ import (
 func (h handler) RemoveSong(c *gin.Context) {
 	claims := c.MustGet("claims").(*models.Claims)
 
-	var desiredSong struct { // Переменная для хранения песни из запроса
+	var requestBody struct { // Переменная для хранения песни из запроса
 		Song string `json:"song"` // Само поле с песней
 	}
 
-	if err := c.ShouldBindJSON(&desiredSong); err != nil { // Биндим песню из запроса в переменную
+	if err := c.ShouldBindJSON(&requestBody); err != nil { // Биндим песню из запроса в переменную
 		log.Println(err) // Обрабатываем ошибки
 		c.AbortWithStatusJSON(401, gin.H{"error": err.Error()})
 		return
 	}
 
 	var desiredSongID uint                                                                                  // Переменная для айди песни, которую надо удалить
-	h.DB.Raw("SELECT id FROM songs WHERE name = ?", strings.ToLower(desiredSong.Song)).Scan(&desiredSongID) // Ищем айди в таблице песен по имени из запроса, сканим в переменную
+	h.DB.Raw("SELECT id FROM songs WHERE name = ?", strings.ToLower(requestBody.Song)).Scan(&desiredSongID) // Ищем айди в таблице песен по имени из запроса, сканим в переменную
 	if desiredSongID == 0 {                                                                                 // Если найденный айди равен 0
 		c.AbortWithStatusJSON(401, gin.H{"error": "Песня не найдена"}) // Отправляем ошибку
 		return                                                         // Ведь песни не существует
