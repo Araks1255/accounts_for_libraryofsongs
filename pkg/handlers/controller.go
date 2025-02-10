@@ -38,4 +38,9 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	bands.POST("/", h.AddBand)
 	bands.GET("/", h.GetBands)
 	bands.DELETE("/", h.RemoveBand)
+
+	albums := accounts.Group("/albums")
+	albums.POST("/", h.AddAlbum)
+	albums.GET("/", h.GetAlbums)
+	albums.DELETE("/", h.RemoveAlbum)
 }
