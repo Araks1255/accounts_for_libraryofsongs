@@ -34,7 +34,7 @@ func (h handler) Login(c *gin.Context) {
 		return
 	}
 
-	if err := utils.CompareHashAndPassword(user.Password, existingUser.Password); !err {
+	if ok := utils.CompareHashAndPassword(user.Password, existingUser.Password); !ok {
 		log.Println("Неверный пароль")
 		c.AbortWithStatusJSON(401, gin.H{"error": "Неверный пароль"})
 		return
