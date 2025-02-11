@@ -1,7 +1,8 @@
-package handlers
+package albums
 
 import (
 	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,6 @@ func (h handler) GetAlbums(c *gin.Context) {
 		"INNER JOIN users ON user_albums.user_id = users.id "+
 		"WHERE users.id = ?", claims.ID).Scan(&albums)
 
-	response := ConvertToMap(albums)
+	response := utils.ConvertToMap(albums)
 	c.JSON(200, response)
 }

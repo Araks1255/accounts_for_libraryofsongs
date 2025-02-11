@@ -2,7 +2,12 @@ package main
 
 import (
 	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/db"
-	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers/accounts"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers/albums"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers/bands"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers/genres"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/handlers/songs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -20,7 +25,11 @@ func main() {
 		panic(err)
 	}
 
-	handlers.RegisterRoutes(router, db)
+	accounts.RegisterRoutes(router, db)
+	songs.RegisterRoutes(router, db)
+	genres.RegisterRoutes(router, db)
+	bands.RegisterRoutes(router, db)
+	albums.RegisterRoutes(router, db)
 
-	router.Run(":8080")
+	router.Run(":80")
 }

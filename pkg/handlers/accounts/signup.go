@@ -1,4 +1,4 @@
-package handlers
+package accounts
 
 import (
 	"log"
@@ -36,5 +36,5 @@ func (h handler) Signup(c *gin.Context) {
 
 	h.DB.Create(&user)
 
-	c.JSON(200, gin.H{"succes": "Регистрация прошла успешно"})
+	c.JSON(200, gin.H{"success": "Регистрация прошла успешно"})
 }

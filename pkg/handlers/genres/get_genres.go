@@ -1,7 +1,8 @@
-package handlers
+package genres
 
 import (
 	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,6 @@ func (h handler) GetGenres(c *gin.Context) {
 		"INNER JOIN users ON user_genres.user_id = users.id "+
 		"WHERE users.id = ?", claims.ID).Scan(&genres)
 
-	response := ConvertToMap(genres)
+	response := utils.ConvertToMap(genres)
 	c.JSON(200, response)
 }

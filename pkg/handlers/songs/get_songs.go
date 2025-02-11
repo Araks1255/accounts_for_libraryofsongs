@@ -1,7 +1,8 @@
-package handlers
+package songs
 
 import (
 	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/models"
+	"github.com/Araks1255/accounts_for_libraryofsongs/pkg/common/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,6 @@ func (h handler) GetSongs(c *gin.Context) {
 		"INNER JOIN users ON user_songs.user_id = users.id "+
 		"WHERE users.id = ?", claims.ID).Scan(&songs) // Сканируем найденные значения в songs
 
-	response := ConvertToMap(songs) // Делаем из массива мапу
+	response := utils.ConvertToMap(songs) // Делаем из массива мапу
 	c.JSON(200, response)           // Отправляем её как JSON
 }

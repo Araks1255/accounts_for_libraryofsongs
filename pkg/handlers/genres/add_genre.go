@@ -1,4 +1,4 @@
-package handlers
+package genres
 
 import (
 	"log"
