@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(secretKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie("token")
 		if err != nil {
@@ -17,7 +17,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		claims, err := utils.ParseToken(cookie)
+		claims, err := utils.ParseToken(cookie, secretKey)
 		if err != nil {
 			log.Println(err)
 			c.AbortWithStatusJSON(401, gin.H{"error": "Вы не авторизованы"})
